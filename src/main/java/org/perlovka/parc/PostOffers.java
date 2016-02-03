@@ -1,3 +1,5 @@
+package org.perlovka.parc;
+
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -16,8 +18,8 @@ import java.net.MalformedURLException;
  */
 public class PostOffers {
     private randomData data = new randomData();
-    private double start = 1451606400000;
-    private double end = 1467331200000;
+    private double start = 1451606400000d;
+    private double end = 1467331200000d;
     private int merchant;
     private String[] mDayPart;
     private String category;
@@ -37,7 +39,7 @@ public class PostOffers {
         JSONObject obj = new JSONObject();
 
         obj.put("text",text);
-        obj.put("offerType", );
+        obj.put("offerType", /*TODO*/ "");
         obj.put("quantity", 1000);
         obj.put("minCostToApply", 39.99);
         obj.put("itemBonusShortText", null );
@@ -64,8 +66,8 @@ public class PostOffers {
         JSONArray Interest = new JSONArray();
 
         JSONObject idInterest = new JSONObject();
-        idInterest.put("id", mInterest1);
-        idInterest.put("id", mInterest2);
+        idInterest.put("id", /*TODO mInterest1*/ "");
+        idInterest.put("id", /*TODO mInterest2*/ "");
         Interest.add(idInterest);
         obj.put("interests", Interest);
 
