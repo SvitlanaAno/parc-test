@@ -10,7 +10,7 @@ public class Application {
   public static void main(String[] args) throws Exception {
     LOG.debug("Application started.");
     MerchantGenerator.get().generateMerchants();
-    LOG.debug("Application finished.");
+    LOG.debug("Application finished all.");
   }
 
 
