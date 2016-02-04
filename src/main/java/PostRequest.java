@@ -19,22 +19,24 @@ public class PostRequest{
     private randomData data = new randomData();
     private double lat;
     private  double lon;
+    private String category;
 
-    public PostRequest(double lat, double lon){
+    public PostRequest(double lat, double lon, String Category){
         this.lat = lat;
         this.lon = lon;
+        this.category = Category;
 
     }
 
     public void sendPost() throws Exception {
         String mName = data.getname();
-        String mCategory = data.getcategory();
-        int mStations = data.getStations();
+        //String mCategory = data.getcategory();
+        String mStations = data.getStations();
         JSONObject obj = new JSONObject();
 
         obj.put("name", mName);
         obj.put("address", "Fake street !@#$%6, Tel: +38 044 331 2531");
-        obj.put("category", mCategory);
+        obj.put("category", this.category);
         JSONObject location = new JSONObject();
         location.put("lat", this.lat);
         location.put("lon", this.lon);

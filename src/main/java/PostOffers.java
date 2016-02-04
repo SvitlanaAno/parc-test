@@ -16,43 +16,67 @@ import java.net.MalformedURLException;
  */
 public class PostOffers {
     private randomData data = new randomData();
-    private double start = 1451606400000;
-    private double end = 1467331200000;
+    private String start = "1451606400000";
+    private String end = "1467331200000";
     private int merchant;
     private String[] mDayPart;
     private String category;
     private String[] day;
+    private String text;
+    private String mOfferType;
 
 
-
-    public PostOffers(int merchant, String category){
+    public PostOffers(int merchant, String Category){
         this.merchant = merchant;
-        this.category = category;
+        this.category = Category;
     }
+
+    private static String getStringBuilder(String[] param) {
+        StringBuilder strBuilder = new StringBuilder();
+        for (int i = 0; i < param.length; i++) {
+            strBuilder.append(param[i]);
+        }
+        String paramStr = strBuilder.toString();
+        return paramStr;
+    }
+
     public void sendPost() throws Exception {
 
-        String[] mDayPart = data.getDayPart();
-        String text = "Offer with category: "+ category + "and dayPart = " + mDayPart.toString() + "and dayWeek: " + day.toString();
+        mDayPart = data.getDayPart();
+        mOfferType = data.getOfferType();
+        day = data.getDayOfWeek();
+        int InterestId = data.getIterests();
 
+        String dayPrt = PostOffers.getStringBuilder(mDayPart);
+        String dayWk = PostOffers.getStringBuilder(day);
+
+        text = "category: " + this.category + " , dayPart = " + dayPrt + " ,dayWeek: "
+                + dayWk + " with Interests: " + InterestId;
         JSONObject obj = new JSONObject();
 
-        obj.put("text",text);
-        obj.put("offerType", );
-        obj.put("quantity", 1000);
-        obj.put("minCostToApply", 39.99);
-        obj.put("itemBonusShortText", null );
-        obj.put("savings", 43);
-        obj.put("imageLocation","https://img.grouponcdn.com/deal/ch53eiVdHsQfwqYUQwcb/NP-2048x1229/v1/c312x189.jpg");
+        obj.put("text", text);
+        obj.put("offerType", mOfferType);
+        obj.put("quantity", data.getSaving());
+        obj.put("minCostToApply", data.getSaving());
+        obj.put("itemBonusShortText", null);
+        obj.put("savings", data.getSaving());
+        obj.put("imageLocation", "https://img.grouponcdn.com/deal/ch53eiVdHsQfwqYUQwcb/NP-2048x1229/v1/c312x189.jpg");
         obj.put("activationInstant", start);
         obj.put("expirationInstant", end);
 
         JSONArray daysOfWeek = new JSONArray();
-        daysOfWeek.add(day);
+        for (int i = 0; i < day.length; i++) {
+            daysOfWeek.add(day[i]);
+        }
         obj.put("daysOfWeek", daysOfWeek);
         obj.put("startLocalTime", "09:00");
-        obj.put("startLocalTime", "23:00");
+        obj.put("endLocalTime", "23:00");
+
+
         JSONArray dayParts = new JSONArray();
-        dayParts.add(mDayPart);
+        for (int j = 0; j < mDayPart.length; j++) {
+            dayParts.add(mDayPart[j]);
+        }
         obj.put("dayParts", dayParts);
 
 
@@ -62,15 +86,13 @@ public class PostOffers {
 
 
         JSONArray Interest = new JSONArray();
-
         JSONObject idInterest = new JSONObject();
-        idInterest.put("id", mInterest1);
-        idInterest.put("id", mInterest2);
+        idInterest.put("id", InterestId);
         Interest.add(idInterest);
         obj.put("interests", Interest);
 
         String body = obj.toJSONString();
-        //System.out.println("\nSending 'POST' request : "+ body);
+        //System.out.println("\nSending 'POST' offer request : " + body);
 
         try {
             String url = "http://offers-parc.cogniance.com:8080/offers/admin";
@@ -88,23 +110,23 @@ public class PostOffers {
                 throw new RuntimeException("Failed : HTTP error code : "
                         + response.getStatusLine().getStatusCode());
             }
-            try{
-                System.out.println("\nSending 'POST' request to URL : "+url);
-                System.out.println("Post parameters : "+post.getEntity());
-                System.out.println("Response Code : "+
+            try {
+                System.out.println("\nSending 'POST' offer request to URL : " + url);
+                System.out.println("Post parameters : " + post.getEntity());
+                System.out.println("Response Code : " +
                         response.getStatusLine().getStatusCode());
 
-                BufferedReader rd=new BufferedReader(
+                BufferedReader rd = new BufferedReader(
                         new InputStreamReader(response.getEntity().getContent()));
 
-                StringBuffer result=new StringBuffer();
-                String line="";
-                while((line=rd.readLine())!=null){
+                StringBuffer result = new StringBuffer();
+                String line = "";
+                while ((line = rd.readLine()) != null) {
                     result.append(line);
                 }
 
                 System.out.println(result.toString());
-            }finally {
+            } finally {
                 response.close();
                 client.close();
             }

@@ -1,10 +1,5 @@
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
-/**
- * Created by sanoshchenko on 2/3/16.
- */
 public class randomData {
     public String[] name1 = {
             "Store", "Restaurant", "Bar", "Spa","Mall", "Cinema", "Theater", "Coffee shop", "Shop", "Movie",
@@ -32,11 +27,16 @@ public class randomData {
             "THURSDAY","FRIDAY","SUNDAY"
     };
 
+    public String[] daysOfWeek3 = {"MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SUNDAY"};
 
-    public String[] dayPart = {
-            "Morning","Daytime","Evening"
+    public String[] dayPart = {"Morning","Daytime","Evening"};
+    public String[] dayPart1 = {"Morning",};
+    public String[] dayPart2 = {"Daytime"};
+    public String[] dayPart3 = {"Evening"};
+
+    public String[] offerType = {
+            "PercentageDiscount","MoneyOff"
     };
-
 
 
     public String getname(){
@@ -56,14 +56,86 @@ public class randomData {
         return category1;
     }
 
-    public int getStations(){
-            Random rand = new Random();
-            int randomNum = rand.nextInt((5 - 1) + 1) + 1;
-            return randomNum;
+    public String getStation(){
+        Random rand = new Random();
+        int stationId = rand.nextInt(5) + 1;
+        return Integer.toString(stationId);
+    }
+
+    public String getStations(){
+        String Station;
+        Random randomDay = new Random();
+        int random2 = randomDay.nextInt(2) + 1;
+        switch (random2){
+            case 1:
+                Station = getStation();
+                break;
+            case 2:
+                Station = null;
+                break;
+            default:
+                Station = getStation();
+
+        } return Station;
+    }
+
+    public int getSaving(){
+        Random rand = new Random();
+        return rand.nextInt(150) + 20;
+    }
+
+
+    public String getOfferType(){
+        String offerTypes = "";
+        Random randomint2 = new Random();
+        int rand = randomint2.nextInt(offerType.length);
+        offerTypes = offerType[rand];
+        return offerTypes;
+    }
+
+    public int getIterests(){
+        Random randInterest = new Random();
+        return randInterest.nextInt(14) + 1;
+    }
+
+    public String[] getDayOfWeek(){
+        String[] dayOfWeek;
+        Random randomDay = new Random();
+        int randomm = randomDay.nextInt(3) + 1;
+        switch (randomm){
+            case 1:
+                dayOfWeek = daysOfWeek1;
+                break;
+            case 2:
+                dayOfWeek = daysOfWeek2;
+                break;
+            case 3:
+                dayOfWeek = daysOfWeek3;
+                break;
+            default:
+                dayOfWeek = daysOfWeek3;
+
+        } return dayOfWeek;
     }
 
     public String[] getDayPart(){
-        return dayPart;
+        String[] DayTime;
+        Random randomDay = new Random();
+        int random1 = randomDay.nextInt(3) + 1;
+        switch (random1){
+            case 1:
+                DayTime = dayPart1;
+                break;
+            case 2:
+                DayTime = dayPart2;
+                break;
+            case 3:
+                DayTime = dayPart3;
+                break;
+            default:
+                DayTime = dayPart;
+
+        } return DayTime;
     }
 
 }
