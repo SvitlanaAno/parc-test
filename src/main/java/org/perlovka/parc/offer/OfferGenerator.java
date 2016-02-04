@@ -168,7 +168,7 @@ public class OfferGenerator {
   private static final String[][] weekDaysOptions = {
       {"MONDAY", "TUESDAY", "WEDNESDAY"},
       {"THURSDAY", "FRIDAY", "SATURDAY"},
-      {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"}
+      {"SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"}
   };
 
   private int weekDaysCounter = 0;

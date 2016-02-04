@@ -41,9 +41,9 @@ public class MerchantGenerator {
   }
 
   public void generateMerchants() {
-    for (int latIndex = 0; latIndex < 10; latIndex++) {
+    for (int latIndex = 0; latIndex < 100; latIndex++) {
       double lat = INITIAL_LATITUDE + (latIndex * LATITUDE_STEP);
-      for (int lonIndex = 0; lonIndex < 10; lonIndex++) {
+      for (int lonIndex = 0; lonIndex < 100; lonIndex++) {
         double lon = INITIAL_LONGITUDE + (lonIndex * LONGITUDE_STEP);
         // Generate merchant
         JSONObject sourceMerchantJson = generateMerchant(lat, lon);
@@ -162,28 +162,12 @@ public class MerchantGenerator {
     return CATEGORIES[cIndex];
   }
 
-  private String getStation() {
+  private int getStations() {
     Random rand = new Random();
     int stationId = rand.nextInt(5) + 1;
-    return Integer.toString(stationId);
+    return stationId;
   }
 
-  public String getStations(){
-    String Station;
-    Random randomDay = new Random();
-    int random2 = randomDay.nextInt(2) + 1;
-    switch (random2){
-      case 1:
-        Station = getStation();
-        break;
-      case 2:
-        Station = null;
-        break;
-      default:
-        Station = getStation();
-
-    } return Station;
-  }
 
 }
 
