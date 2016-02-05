@@ -1,64 +1,32 @@
 package org.perlovka.parc.merchant;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.perlovka.parc.ApiRequestSender;
 import org.perlovka.parc.offer.OfferGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MerchantGenerator {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MerchantGenerator.class);
+  private double minLat;
+  private double minLon;
+  private double maxLat;
+  private double maxLon;
 
-  private static final double INITIAL_LONGITUDE = 30.46664719d;
-  private static final double LONGITUDE_STEP = 0.0004901157d;
-  private static final double INITIAL_LATITUDE = 50.38929919d;
-  private static final double LATITUDE_STEP = 0.0003122835d;
-
-  private static final String MERCHANT_URL = "http://offers-parc.cogniance.com:8080/merchants/admin";
-
-  private OfferGenerator offerGenerator;
-
-  public MerchantGenerator() {
-    this.offerGenerator = OfferGenerator.get();
+  public MerchantGenerator(double minLat, double minLon, double maxLat, double maxLon) {
+    this.minLat = minLat;
+    this.minLon = minLon;
+    this.maxLat = maxLat;
+    this.maxLon = maxLon;
   }
 
-  public static MerchantGenerator get() {
-    return new MerchantGenerator();
-  }
+  public JSONObject generateMerchant() {
 
-  public void generateMerchants() {
-    for (int latIndex = 0; latIndex < 100; latIndex++) {
-      double lat = INITIAL_LATITUDE + (latIndex * LATITUDE_STEP);
-      for (int lonIndex = 0; lonIndex < 100; lonIndex++) {
-        double lon = INITIAL_LONGITUDE + (lonIndex * LONGITUDE_STEP);
-        // Generate merchant
-        JSONObject sourceMerchantJson = generateMerchant(lat, lon);
-        LOG.debug("Merchant: " + sourceMerchantJson.toString());
-        JSONObject responseMerchantJson = sendMerchant(sourceMerchantJson.toString());
-        // Generate offer for this merchant
-        JSONObject offerJson = offerGenerator.generateOffer((Long) responseMerchantJson.get("id"), (Long) responseMerchantJson.get("category"));
-        LOG.debug("Offer: " + offerJson.toString());
+    double latitude = ThreadLocalRandom.current().nextDouble(minLat, maxLat);
+    double longitude = ThreadLocalRandom.current().nextDouble(minLon, maxLon);
 
-        offerGenerator.sendOffer(offerJson.toJSONString());
-      }
-    }
-  }
-
-  public JSONObject generateMerchant(double latitude, double longitude) {
     JSONObject merchantJson = new JSONObject();
     merchantJson.put("name", getName());
     merchantJson.put("address", "Fake street !@#$%6, Tel: +38 044 331 2531");
@@ -69,62 +37,19 @@ public class MerchantGenerator {
     location.put("lon", longitude);
     merchantJson.put("location", location);
 
-    JSONArray nearbyStations = new JSONArray();
-    JSONObject idS = new JSONObject();
-    idS.put("id", getStations());
-    nearbyStations.add(idS);
-    merchantJson.put("nearbyStations", nearbyStations);
+    int stationId = getStations();
+
+    if (stationId != 0) {
+      JSONArray nearbyStations = new JSONArray();
+      JSONObject idS = new JSONObject();
+      idS.put("id", stationId);
+      nearbyStations.add(idS);
+      merchantJson.put("nearbyStations", nearbyStations);
+    }
 
     return merchantJson;
   }
 
-  public JSONObject sendMerchant(String merchant) {
-    try {
-      CloseableHttpClient client = HttpClients.createDefault();
-      HttpPost post = new HttpPost(MERCHANT_URL);
-
-      StringEntity input = new StringEntity(merchant);
-      input.setContentType("application/json");
-      post.setEntity(input);
-
-      CloseableHttpResponse response = client.execute(post);
-      if (response.getStatusLine().getStatusCode() != 200) {
-        throw new RuntimeException("Failed : HTTP error code : "
-                                   + response.getStatusLine().getStatusCode());
-      }
-      try {
-        LOG.debug("Sending 'POST' request to URL : " + MERCHANT_URL);
-        LOG.debug("Post parameters : " + post.getEntity());
-        LOG.debug("Response Code : " + response.getStatusLine().getStatusCode());
-
-        BufferedReader rd = new BufferedReader(
-            new InputStreamReader(response.getEntity().getContent()));
-
-        StringBuffer result = new StringBuffer();
-        String line = "";
-        while ((line = rd.readLine()) != null) {
-          result.append(line);
-        }
-
-        JSONObject merchantJsonResponse = null;
-        try {
-          merchantJsonResponse = (JSONObject) new JSONParser().parse(result.toString());
-          LOG.debug(merchantJsonResponse.toString());
-        } catch (ParseException e) {
-          e.printStackTrace();
-        }
-        return merchantJsonResponse;
-      } finally {
-        response.close();
-        client.close();
-      }
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    throw new RuntimeException("Something wrong.");
-  }
 
   private static final Random random = new Random();
 
@@ -152,19 +77,19 @@ public class MerchantGenerator {
   };
 
   private String getName() {
-    int mTypeIndex = random.nextInt(MERCHANT_TYPES.length);
-    int mNameIndex = random.nextInt(MERCHANT_NAMES.length);
-    return MERCHANT_TYPES[mTypeIndex] + " " + MERCHANT_NAMES[mNameIndex];
+    int typeIndex = random.nextInt(MERCHANT_TYPES.length);
+    int nameIndex = random.nextInt(MERCHANT_NAMES.length);
+    return MERCHANT_TYPES[typeIndex] + " " + MERCHANT_NAMES[nameIndex];
   }
 
   private String getCategory() {
-    int cIndex = random.nextInt(CATEGORIES.length);
-    return CATEGORIES[cIndex];
+    int index = random.nextInt(CATEGORIES.length);
+    return CATEGORIES[index];
   }
 
   private int getStations() {
     Random rand = new Random();
-    int stationId = rand.nextInt(5) + 1;
+    int stationId = rand.nextInt(6);
     return stationId;
   }
 
