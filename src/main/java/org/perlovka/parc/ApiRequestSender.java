@@ -21,7 +21,7 @@ import java.net.MalformedURLException;
  */
 public class ApiRequestSender {
 
-    //private static final Logger LOG = LoggerFactory.getLogger(ApiRequestSender.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApiRequestSender.class);
     private final String fullUrl;
 
     public ApiRequestSender(String url, String endpoint) {
@@ -43,9 +43,9 @@ public class ApiRequestSender {
                         + response.getStatusLine().getStatusCode());
             }
             try {
-                //LOG.debug("Sending 'POST' request to URL : " + fullUrl);
-                //LOG.debug("Post parameters : " + post.getEntity());
-                //LOG.debug("Response Code : " + response.getStatusLine().getStatusCode());
+                LOG.debug("Sending 'POST' request to URL : " + fullUrl);
+                LOG.debug("Post parameters : " + post.getEntity());
+                LOG.debug("Response Code : " + response.getStatusLine().getStatusCode());
 
                 BufferedReader rd = new BufferedReader(
                         new InputStreamReader(response.getEntity().getContent()));
@@ -59,7 +59,7 @@ public class ApiRequestSender {
                 JSONObject merchantJsonResponse = null;
                 try {
                     merchantJsonResponse = (JSONObject) new JSONParser().parse(result.toString());
-                    //LOG.debug(merchantJsonResponse.toString());
+                    LOG.debug(merchantJsonResponse.toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
