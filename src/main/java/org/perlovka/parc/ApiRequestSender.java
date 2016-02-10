@@ -43,8 +43,8 @@ public class ApiRequestSender {
                         + response.getStatusLine().getStatusCode());
             }
             try {
-                LOG.debug("Sending 'POST' request to URL : " + fullUrl);
-                LOG.debug("Post parameters : " + post.getEntity());
+                //LOG.debug("Sending 'POST' request to URL : " + fullUrl);
+                //LOG.debug("Post parameters : " + post.getEntity());
                 LOG.debug("Response Code : " + response.getStatusLine().getStatusCode());
 
                 BufferedReader rd = new BufferedReader(

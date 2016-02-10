@@ -24,7 +24,7 @@ import java.util.stream.LongStream;
 
 public class OfferGenerator {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OfferGenerator.class);
+  //private static final Logger LOG = LoggerFactory.getLogger(OfferGenerator.class);
   public static final String[] offerTypes = new String[]{"PercentageDiscount", "MoneyOff", "ItemBonus"};
   public static final String[][] times = new String[][]{{"09:00", "13:00"}, {"09:00", "17:00"},
           {"12:00", "20:00"}, {"22:00", "05:00"}, {"18:00", "22:00"},
