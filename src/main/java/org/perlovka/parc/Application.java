@@ -30,8 +30,11 @@ public class Application {
 
     int numberOfInterests = Integer.parseInt(arg(7, "14"));
 
-    ApiRequestSender merchantSender = new ApiRequestSender(url, "merchants/admin");
-    ApiRequestSender offerSender = new ApiRequestSender(url, "offers/admin");
+    Authenticator loginSender = new Authenticator(url);
+    String session = loginSender.login();
+
+    ApiRequestSender merchantSender = new ApiRequestSender(url, "merchants/admin", session);
+    ApiRequestSender offerSender = new ApiRequestSender(url, "offers/admin", session);
 
     MerchantGenerator merchantGenerator = new MerchantGenerator(minLat, minLon, maxLat, maxLon);
     OfferGenerator offerGenerator = new OfferGenerator(numberOfInterests);
